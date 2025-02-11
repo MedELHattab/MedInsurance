@@ -1,6 +1,5 @@
 package org.example.medinsurance.service;
 
-
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.example.medinsurance.dto.LoginUserDto;
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -25,17 +23,21 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
-
-
+    private final FileStorageService fileStorageService; // Inject FileStorageService
 
     public User signup(RegisterUserDto input) {
+        String profileImageUrl = null;
+
+        if (input.getImage() != null && !input.getImage().isEmpty()) {
+            profileImageUrl = fileStorageService.storeBase64Image(input.getImage()); // Save Image
+        }
+
         User user = User.builder()
                 .name(input.getName())
                 .email(input.getEmail())
                 .age(input.getAge())
-                .monthlyIncome(input.getMonthlyIncome())
-                .creditScore(input.getCreditScore())
                 .password(passwordEncoder.encode(input.getPassword()))
+                .image(profileImageUrl) // Store the image path
                 .build();
 
         user.setVerificationCode(generateVerificationCode());
@@ -52,7 +54,7 @@ public class AuthenticationService {
         if (!user.isEnabled()) {
             throw new RuntimeException("Account not verified. Please verify your account.");
         }
-        boolean test = user.isEnabled();
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
@@ -99,7 +101,7 @@ public class AuthenticationService {
         }
     }
 
-    private void sendVerificationEmail(User user) { //TODO: Update with company logo
+    private void sendVerificationEmail(User user) {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"
@@ -118,10 +120,10 @@ public class AuthenticationService {
         try {
             emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
         } catch (MessagingException e) {
-            // Handle email sending exception
             e.printStackTrace();
         }
     }
+
     private String generateVerificationCode() {
         Random random = new Random();
         int code = random.nextInt(900000) + 100000;

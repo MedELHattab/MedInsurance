@@ -9,11 +9,9 @@ import org.example.medinsurance.enums.Role;
 public class LoginResponse {
     private String token;
     private long expiresIn;
-    private Role role;
 
-    public LoginResponse(String token, long expiresIn, Role role) {
+    public LoginResponse(String token, long expiresIn) {
         this.token = token;
         this.expiresIn = expiresIn;
-        this.role = role;
     }
 }

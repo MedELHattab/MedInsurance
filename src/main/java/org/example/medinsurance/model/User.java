@@ -39,11 +39,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private int age;
 
-    @Column(name = "monthly_income", nullable = false)
-    private Double monthlyIncome;
-
-    @Column(name = "credit_score", nullable = false)
-    private int creditScore;
+    @Column(nullable = true)
+    private String image;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -57,6 +54,7 @@ public class User implements UserDetails {
 
     @Column(name = "verification_code")
     private String verificationCode;
+
     @Column(name = "verification_expiration")
     private LocalDateTime verificationCodeExpiresAt;
 

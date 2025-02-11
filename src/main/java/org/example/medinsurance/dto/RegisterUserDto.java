@@ -24,12 +24,5 @@ public class RegisterUserDto {
     @Min(value = 18, message = "Age must be at least 18")
     private Integer age;
 
-    @NotNull(message = "Monthly income is required")
-    @PositiveOrZero(message = "Monthly income must be zero or positive")
-    private Double monthlyIncome;
-
-    @NotNull(message = "Credit score is required")
-    @Min(value = 300, message = "Credit score must be at least 300")
-    @Max(value = 850, message = "Credit score must be at most 850")
-    private Integer creditScore;
+    private String image;
 }

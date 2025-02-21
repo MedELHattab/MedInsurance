@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class UpdateProfileRequest {
+    @Size(min = 3, max = 100)
     private String name;
 
     @Email(message = "Email should be valid")

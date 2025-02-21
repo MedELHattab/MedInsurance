@@ -26,8 +26,12 @@ public class AuthenticationService {
     private final FileStorageService fileStorageService; // Inject FileStorageService
 
     public User signup(RegisterUserDto input) {
-        String profileImageUrl = null;
+        // Check if the email is already registered
+        if (userRepository.existsByEmail(input.getEmail())) {
+            throw new RuntimeException("Email is already in use");
+        }
 
+        String profileImageUrl = null;
         if (input.getImage() != null && !input.getImage().isEmpty()) {
             profileImageUrl = fileStorageService.storeBase64Image(input.getImage()); // Save Image
         }
@@ -43,6 +47,7 @@ public class AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
+
         sendVerificationEmail(user);
         return userRepository.save(user);
     }

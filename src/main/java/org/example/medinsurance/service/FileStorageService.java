@@ -27,9 +27,10 @@ public class FileStorageService {
             String filename = UUID.randomUUID().toString() + ".jpg";
             Path filePath = Paths.get(uploadDir, filename);
             Files.write(filePath, decodedBytes);
-            return filePath.toString(); // Return the stored image path
+            return filename; // Return only the filename
         } catch (IOException e) {
             throw new RuntimeException("Failed to store Base64 image", e);
         }
     }
+
 }

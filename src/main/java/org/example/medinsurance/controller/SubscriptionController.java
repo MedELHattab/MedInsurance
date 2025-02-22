@@ -14,17 +14,15 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @PostMapping("/subscribe")
-    public ResponseEntity<SubscriptionDTO> subscribeUser(
-            @RequestParam Long userId,
-            @RequestParam Long policyId) {
-        return ResponseEntity.ok(subscriptionService.subscribeUser(userId, policyId));
+    public ResponseEntity<SubscriptionDTO> subscribeUser(@RequestParam Long policyId) {
+        return ResponseEntity.ok(subscriptionService.subscribeUser(policyId));
     }
+
 
     @PutMapping("/upgrade")
     public ResponseEntity<SubscriptionDTO> upgradeSubscription(
-            @RequestParam Long userId,
             @RequestParam Long newPolicyId) {
-        return ResponseEntity.ok(subscriptionService.upgradeSubscription(userId, newPolicyId));
+        return ResponseEntity.ok(subscriptionService.upgradeSubscription(newPolicyId));
     }
 
     @GetMapping("/user/{userId}")

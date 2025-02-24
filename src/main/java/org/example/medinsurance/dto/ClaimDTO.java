@@ -1,23 +1,27 @@
 package org.example.medinsurance.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.example.medinsurance.enums.ClaimStatus;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ClaimDTO {
-
-    @NotNull(message = "Policy is required")
+    private Long id;
+    private Long userId;
     private Long policyId;
 
+    @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Image is required")
-    private String image; // Base64 encoded image
+    @NotBlank(message = "image is required")
+    private String image;
+
+    private LocalDateTime createdAt;
+    private ClaimStatus status;
 }

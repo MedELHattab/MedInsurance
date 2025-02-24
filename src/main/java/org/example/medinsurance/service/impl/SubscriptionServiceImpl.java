@@ -11,6 +11,7 @@ import org.example.medinsurance.repository.PolicyRepository;
 import org.example.medinsurance.repository.SubscriptionRepository;
 import org.example.medinsurance.repository.UserRepository;
 import org.example.medinsurance.service.SubscriptionService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -83,12 +84,27 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionDTO getSubscriptionByUser(Long userId) {
-        PolicySubscription subscription = subscriptionRepository.findByUser(
-                userRepository.findById(Math.toIntExact(userId))
-                        .orElseThrow(() -> new RuntimeException("User not found"))
-        ).orElseThrow(() -> new RuntimeException("No active subscription found for this user"));
+    public SubscriptionDTO getSubscriptionByUser() {
+        // Get the authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Get the logged-in user's email
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        PolicySubscription subscription = subscriptionRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("No active subscription found for this user"));
 
         return subscriptionMapper.toDto(subscription);
     }
+
+    public SubscriptionDTO changeSubscriptionStatus(Long subscriptionId, SubscriptionStatus newStatus) {
+        PolicySubscription subscription = subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+
+        subscription.setStatus(newStatus);
+        subscriptionRepository.save(subscription);
+        return subscriptionMapper.toDto(subscription);
+    }
+
 }

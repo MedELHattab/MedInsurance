@@ -11,9 +11,14 @@ public interface SubscriptionMapper {
 
     SubscriptionMapper INSTANCE = Mappers.getMapper(SubscriptionMapper.class);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "policy.id", target = "policyId")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "subscriptionDate", target = "subscriptionDate")
     SubscriptionDTO toDto(PolicySubscription entity);
 
     @Mapping(source = "policyId", target = "policy.id")
+    @Mapping(source = "userId", target = "user.id")
     PolicySubscription toEntity(SubscriptionDTO dto);
 }

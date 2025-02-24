@@ -2,8 +2,10 @@ package org.example.medinsurance.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.medinsurance.dto.SubscriptionDTO;
+import org.example.medinsurance.enums.SubscriptionStatus;
 import org.example.medinsurance.service.SubscriptionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,8 +27,19 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.upgradeSubscription(newPolicyId));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<SubscriptionDTO> getSubscriptionByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(subscriptionService.getSubscriptionByUser(userId));
+    @GetMapping("/my-subscription")
+    public ResponseEntity<SubscriptionDTO> getSubscriptionByUser() {
+        return ResponseEntity.ok(subscriptionService.getSubscriptionByUser());
     }
+
+    @PutMapping("/{subscriptionId}/status")
+    @PreAuthorize("hasRole('EMPLOYEE')") // Only EMPLOYEE can access this endpoint
+    public ResponseEntity<String> updateSubscriptionStatus(
+            @PathVariable Long subscriptionId,
+            @RequestParam SubscriptionStatus newStatus) {
+
+        subscriptionService.changeSubscriptionStatus(subscriptionId, newStatus);
+        return ResponseEntity.ok("Subscription status updated successfully!");
+    }
+
 }

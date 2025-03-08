@@ -38,13 +38,11 @@ public class PolicyController {
         return ResponseEntity.ok("Policy deleted");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<PolicyDTO> getPolicyById(@PathVariable Long id) {
         return ResponseEntity.ok(policyService.getPolicyById(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<PolicyDTO>> getAllPolicies() {
         return ResponseEntity.ok(policyService.getAllPolicies());

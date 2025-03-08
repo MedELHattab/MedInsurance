@@ -2,6 +2,7 @@ package org.example.medinsurance.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.medinsurance.dto.UpdateProfileRequest;
+import org.example.medinsurance.dto.UserDTO;
 import org.example.medinsurance.model.User;
 import org.example.medinsurance.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,18 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.createUser(userDTO));
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUser(userDTO));
     }
 
     @GetMapping

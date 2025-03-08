@@ -2,6 +2,7 @@ package org.example.medinsurance.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.medinsurance.dto.UpdateProfileRequest;
+import org.example.medinsurance.dto.UserDTO;
 import org.example.medinsurance.model.User;
 import org.example.medinsurance.repository.UserRepository;
 import org.example.medinsurance.service.FileStorageService;
@@ -25,6 +26,29 @@ public class UserServiceImpl implements UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public User createUser(UserDTO userDTO){
+        User user = new User();
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setAge(userDTO.getAge());
+        user.setName(userDTO.getName());
+        user.setEnabled(true);
+        user.setRole(userDTO.getRole());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(UserDTO userDTO){
+        User user = getUserById(userDTO.getId());
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setAge(userDTO.getAge());
+        user.setRole(userDTO.getRole());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override

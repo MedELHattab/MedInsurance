@@ -43,8 +43,13 @@ public class PolicyController {
         return ResponseEntity.ok(policyService.getPolicyById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<PolicyDTO>> getAllPolicies() {
         return ResponseEntity.ok(policyService.getAllPolicies());
     }
-}
+
+    @GetMapping("/active")
+    public ResponseEntity<List<PolicyDTO>> getActivePolicies() {
+        return ResponseEntity.ok(policyService.getActivePolicies());
+    }}

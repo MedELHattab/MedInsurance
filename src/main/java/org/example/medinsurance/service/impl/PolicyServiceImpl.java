@@ -2,6 +2,7 @@ package org.example.medinsurance.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.medinsurance.dto.PolicyDTO;
+import org.example.medinsurance.enums.PolicyStatus;
 import org.example.medinsurance.mapper.PolicyMapper;
 import org.example.medinsurance.model.Policy;
 import org.example.medinsurance.repository.PolicyRepository;
@@ -55,6 +56,14 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     public List<PolicyDTO> getAllPolicies() {
         return policyRepository.findAll().stream()
+                .map(policyMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PolicyDTO> getActivePolicies() {
+        return policyRepository.findByStatus(PolicyStatus.ACTIVE)
+                .stream()
                 .map(policyMapper::toDto)
                 .collect(Collectors.toList());
     }

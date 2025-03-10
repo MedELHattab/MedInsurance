@@ -9,4 +9,5 @@ public interface PolicyService {
     void deletePolicy(Long id);
     PolicyDTO getPolicyById(Long id);
     List<PolicyDTO> getAllPolicies();
+    List<PolicyDTO> getActivePolicies();
 }

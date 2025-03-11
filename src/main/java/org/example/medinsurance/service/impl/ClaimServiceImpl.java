@@ -31,7 +31,7 @@ public class ClaimServiceImpl implements ClaimService {
     private final EmailService emailService;
     private final PolicyRepository policyRepository;
     private final SubscriptionService subscriptionService;
-
+    private final RefundService refundService;
 
     @Override
     public ClaimDTO submitClaim(ClaimDTO claimDTO) {
@@ -68,7 +68,6 @@ public class ClaimServiceImpl implements ClaimService {
         return claimMapper.toDto(savedClaim);
     }
 
-
     @Override
     public List<ClaimDTO> getAllClaims() {
         return claimRepository.findAll().stream()
@@ -81,8 +80,45 @@ public class ClaimServiceImpl implements ClaimService {
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new RuntimeException("Claim not found"));
 
+        ClaimStatus oldStatus = claim.getStatus();
         claim.setStatus(status);
         claimRepository.save(claim);
+
+        // If the claim is being approved and wasn't already approved before
+        if (status == ClaimStatus.APPROVED && oldStatus != ClaimStatus.APPROVED) {
+            // Create a refund for the approved claim
+            refundService.createRefund(claim);
+
+            // Send approval notification
+            try {
+                String subject = "Your Claim Has Been Approved";
+                String message = "Dear " + claim.getUser().getUsername() + ",\n\n" +
+                        "We are pleased to inform you that your claim has been approved.\n" +
+                        "A refund will be processed according to your policy coverage.\n\n" +
+                        "Thank you for using our services.\n" +
+                        "Insurance Admin Team";
+
+                emailService.sendVerificationEmail(claim.getUser().getEmail(), subject, message);
+            } catch (MessagingException e) {
+                // Log error but don't stop the process
+                System.err.println("Failed to send claim approval email: " + e.getMessage());
+            }
+        } else if (status == ClaimStatus.REJECTED) {
+            // Send rejection notification
+            try {
+                String subject = "Your Claim Status Update";
+                String message = "Dear " + claim.getUser().getUsername() + ",\n\n" +
+                        "We regret to inform you that your claim has been rejected.\n" +
+                        "If you have any questions, please contact our support team.\n\n" +
+                        "Thank you for your understanding.\n" +
+                        "Insurance Admin Team";
+
+                emailService.sendVerificationEmail(claim.getUser().getEmail(), subject, message);
+            } catch (MessagingException e) {
+                // Log error but don't stop the process
+                System.err.println("Failed to send claim rejection email: " + e.getMessage());
+            }
+        }
     }
 
     private void sendClaimNotification(Claim claim) {

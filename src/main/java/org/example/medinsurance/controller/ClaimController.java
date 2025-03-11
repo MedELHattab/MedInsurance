@@ -43,12 +43,13 @@ public class ClaimController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<List<ClaimDTO>> getAllClaims() {
         return ResponseEntity.ok(claimService.getAllClaims());
     }
 
     @PutMapping("/{claimId}/status")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<String> updateClaimStatus(@PathVariable Long claimId,
                                                     @RequestParam ClaimStatus status) {
         claimService.updateClaimStatus(claimId, status);

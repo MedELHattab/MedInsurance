@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -105,6 +107,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscription.setStatus(newStatus);
         subscriptionRepository.save(subscription);
         return subscriptionMapper.toDto(subscription);
+    }
+
+    @Override
+    public List<SubscriptionDTO> getAllSubscriptions() {
+        List<PolicySubscription> subscriptions = subscriptionRepository.findAll();
+
+        return subscriptions.stream()
+                .map(subscription -> {
+                    SubscriptionDTO dto = subscriptionMapper.toDto(subscription);
+
+                    // Enrich DTO with user information
+                    User user = subscription.getUser();
+                    dto.setUserName(user.getName());
+
+                    // Enrich DTO with policy information
+                    Policy policy = subscription.getPolicy();
+                    dto.setPolicyName(policy.getName());
+                    dto.setCoveragePercentage(policy.getPercentage());
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

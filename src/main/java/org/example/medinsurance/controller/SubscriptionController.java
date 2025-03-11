@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
@@ -18,6 +20,12 @@ public class SubscriptionController {
     @PostMapping("/subscribe")
     public ResponseEntity<SubscriptionDTO> subscribeUser(@RequestParam Long policyId) {
         return ResponseEntity.ok(subscriptionService.subscribeUser(policyId));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<List<SubscriptionDTO>> getSubscriptions() {
+        return ResponseEntity.ok(subscriptionService.getAllSubscriptions());
     }
 
 
@@ -33,7 +41,7 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{subscriptionId}/status")
-    @PreAuthorize("hasRole('EMPLOYEE')") // Only EMPLOYEE can access this endpoint
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<String> updateSubscriptionStatus(
             @PathVariable Long subscriptionId,
             @RequestParam SubscriptionStatus newStatus) {

@@ -15,6 +15,10 @@ public class ClaimDTO {
     private Long id;
     private Long userId;
     private Long policyId;
+    private String userName;
+    private String userEmail;
+    private String policyName;
+    private String policyCoverage;
 
     @NotBlank(message = "Description is required")
     private String description;

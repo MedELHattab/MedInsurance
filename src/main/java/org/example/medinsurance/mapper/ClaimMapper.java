@@ -4,18 +4,21 @@ import org.example.medinsurance.dto.ClaimDTO;
 import org.example.medinsurance.model.Claim;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ClaimMapper {
 
-    ClaimMapper INSTANCE = Mappers.getMapper(ClaimMapper.class);
-
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "policy.id", target = "policyId")
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userName", source = "user.username")
+    @Mapping(target = "userEmail", source = "user.email")
+    @Mapping(target = "policyId", source = "policy.id")
+    @Mapping(target = "policyName", source = "policy.name")
+    @Mapping(target = "policyCoverage", source="policy.percentage")
     ClaimDTO toDto(Claim claim);
 
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "policyId", target = "policy.id")
-    Claim toEntity(ClaimDTO dto);
+    @Mapping(target = "user.id", source = "userId")
+    @Mapping(target = "policy.id", source = "policyId")
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    Claim toEntity(ClaimDTO claimDTO);
 }

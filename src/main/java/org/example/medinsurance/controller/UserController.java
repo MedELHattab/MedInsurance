@@ -52,4 +52,9 @@ public class UserController {
     public ResponseEntity<User> updateProfile(@RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateProfile(request));
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> getProfile() {
+        return ResponseEntity.ok(userService.getAuthenticatedUser());
+    }
 }

@@ -33,7 +33,7 @@ public class RefundServiceImpl implements RefundService {
         }
 
         // Calculate refund amount based on policy coverage percentage
-        BigDecimal claimAmount = new BigDecimal("1000"); // Default amount, replace with actual claim amount when added to model
+        BigDecimal  claimAmount = new BigDecimal("1000"); // Default amount, replace with actual claim amount when added to model
         BigDecimal coveragePercentage = BigDecimal.valueOf(claim.getPolicy().getPercentage());
         BigDecimal refundAmount = claimAmount.multiply(coveragePercentage).divide(BigDecimal.valueOf(100));
 

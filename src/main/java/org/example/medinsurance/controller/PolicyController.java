@@ -52,4 +52,5 @@ public class PolicyController {
     @GetMapping("/active")
     public ResponseEntity<List<PolicyDTO>> getActivePolicies() {
         return ResponseEntity.ok(policyService.getActivePolicies());
-    }}
+    }
+}

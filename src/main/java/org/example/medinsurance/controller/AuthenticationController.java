@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.Base64;
 
@@ -26,24 +29,40 @@ public class AuthenticationController {
 
     @PostMapping(value = "/signup", consumes = {"multipart/form-data"})
     public ResponseEntity<String> signup(
-            @RequestParam("user") String userJson, // The user data as a JSON string
-            @RequestParam("image") MultipartFile image) { // The image file
+            @RequestPart("user") String userJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            // You can parse the user JSON string into the RegisterUserDto (use a library like Jackson)
-            RegisterUserDto registerUserDto = new ObjectMapper().readValue(userJson, RegisterUserDto.class);
-            // Convert the image to a base64 string for storage
-            String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
 
-            registerUserDto.setImage(base64Image); // Set the image to the DTO
+            // Create ObjectMapper with JSR310 module for handling LocalDate
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-            // Call the signup service method to register the user and upload the image
+            // Parse the JSON into RegisterUserDto
+            RegisterUserDto registerUserDto = objectMapper.readValue(userJson, RegisterUserDto.class);
+
+            // Handle image if provided - convert to base64 string
+            if (image != null && !image.isEmpty()) {
+                try {
+                    byte[] imageBytes = image.getBytes();
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    registerUserDto.setImage(base64Image);
+                    System.out.println("Image converted to base64 (length: " + base64Image.length() + ")");
+                } catch (Exception e) {
+                    System.err.println("Error processing image: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            // Call the service to register the user
             User user = authenticationService.signup(registerUserDto);
 
-            // Return a success message
-            return new ResponseEntity<>("User registered successfully. Please check your email for verification.", HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("User registered successfully. Please check your email for verification.");
         } catch (Exception e) {
-            // Handle error if any occurs during the signup process
-            return new ResponseEntity<>("Error during registration: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error during registration: " + e.getMessage());
         }
     }
 

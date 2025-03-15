@@ -33,7 +33,9 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setAge(userDTO.getAge());
+        user.setBirthday(userDTO.getBirthday());
+        user.setAddress(userDTO.getAddress());
+        user.setPhone(userDTO.getPhone());
         user.setName(userDTO.getName());
         user.setEnabled(true);
         user.setRole(userDTO.getRole());
@@ -45,7 +47,9 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userDTO.getId());
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setAge(userDTO.getAge());
+        user.setBirthday(userDTO.getBirthday());
+        user.setAddress(userDTO.getAddress());
+        user.setPhone(userDTO.getPhone());
         user.setRole(userDTO.getRole());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return userRepository.save(user);
@@ -58,6 +62,9 @@ public class UserServiceImpl implements UserService {
         if (request.getName() != null) user.setName(request.getName());
 
         if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getBirthday() != null) user.setBirthday(request.getBirthday());
+        if (request.getAddress() != null) user.setAddress(request.getAddress());
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
         if (request.getPassword() != null) user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         // Handle profile image update (Base64)

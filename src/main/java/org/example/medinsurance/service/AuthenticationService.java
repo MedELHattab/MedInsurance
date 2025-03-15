@@ -39,7 +39,9 @@ public class AuthenticationService {
         User user = User.builder()
                 .name(input.getName())
                 .email(input.getEmail())
-                .age(input.getAge())
+                .birthday(input.getBirthday())
+                .address(input.getAddress())
+                .phone(input.getPhone())
                 .password(passwordEncoder.encode(input.getPassword()))
                 .image(profileImageUrl) // Store the image path
                 .build();

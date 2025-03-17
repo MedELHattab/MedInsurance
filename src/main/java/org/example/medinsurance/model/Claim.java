@@ -29,6 +29,8 @@ public class Claim {
 
     private String description;
     private String image;
+
+    private Double amount;
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)

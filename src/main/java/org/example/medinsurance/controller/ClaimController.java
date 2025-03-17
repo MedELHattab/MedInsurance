@@ -24,10 +24,12 @@ public class ClaimController {
     @PostMapping(value = "/submit", consumes = {"multipart/form-data"})
     public ResponseEntity<ClaimDTO> submitClaim(
             @RequestParam("description") String description,
+            @RequestParam("amount") String amount,
             @RequestParam(value = "image", required = false) MultipartFile image) {
 
         ClaimDTO claimDTO = new ClaimDTO();
         claimDTO.setDescription(description);
+        claimDTO.setAmount(Double.valueOf(amount));
 
         // Convert the image to Base64 if provided
         if (image != null && !image.isEmpty()) {

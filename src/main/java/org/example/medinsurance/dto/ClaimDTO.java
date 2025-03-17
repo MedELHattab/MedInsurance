@@ -1,6 +1,7 @@
 package org.example.medinsurance.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.example.medinsurance.enums.ClaimStatus;
 
@@ -25,6 +26,9 @@ public class ClaimDTO {
 
     @NotBlank(message = "image is required")
     private String image;
+
+    @NotNull(message = "amount is required")
+    private Double amount;
 
     private LocalDateTime createdAt;
     private ClaimStatus status;

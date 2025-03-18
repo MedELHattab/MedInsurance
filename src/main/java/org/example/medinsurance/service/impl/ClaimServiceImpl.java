@@ -27,6 +27,7 @@ public class ClaimServiceImpl implements ClaimService {
     private final ClaimRepository claimRepository;
     private final UserRepository userRepository;
     private final ClaimMapper claimMapper;
+    private final UserService userService;
     private final FileStorageService fileStorageService;
     private final EmailService emailService;
     private final PolicyRepository policyRepository;
@@ -139,5 +140,19 @@ public class ClaimServiceImpl implements ClaimService {
         } catch (MessagingException e) {
             throw new RuntimeException("Error sending claim notification emails", e);
         }
+    }
+
+    @Override
+    public List<ClaimDTO> getAuthUserClaims() {
+        // Get the authenticated user
+        User currentUser = userService.getAuthenticatedUser();
+
+        // Get claims for this user
+        List<Claim> userClaims = claimRepository.findByUserOrderByCreatedAtDesc(currentUser);
+
+        // Use the mapper to convert claims to DTOs
+        return userClaims.stream()
+                .map(claimMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

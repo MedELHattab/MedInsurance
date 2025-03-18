@@ -57,4 +57,9 @@ public class ClaimController {
         claimService.updateClaimStatus(claimId, status);
         return ResponseEntity.ok("Claim status updated successfully!");
     }
+
+    @GetMapping("/my-claims")
+    public ResponseEntity<List<ClaimDTO>> getMyClaims() {
+        return ResponseEntity.ok(claimService.getAuthUserClaims());
+    }
 }

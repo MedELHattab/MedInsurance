@@ -12,4 +12,6 @@ public interface ClaimService {
     List<ClaimDTO> getAllClaims();
 
     void updateClaimStatus(Long claimId, ClaimStatus status);
+
+    List<ClaimDTO> getAuthUserClaims();
 }

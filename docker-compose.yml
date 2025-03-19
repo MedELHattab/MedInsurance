@@ -1,0 +1,17 @@
+version: '3'
+services:
+  medinsurance_jenkins:
+    image: jenkins/jenkins:lts
+    container_name: medinsurance_jenkins
+    environment:
+      - JENKINS_OPTS="--httpPort=8081"
+    ports:
+      - "8081:8081"
+      - "50000:50000"
+    volumes:
+      - jenkins_medinsurance:/var/jenkins_home
+    restart: unless-stopped
+    command: --httpPort=8081
+
+volumes:
+  jenkins_medinsurance:

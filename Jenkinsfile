@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = 'medInsurance'
+        DOCKER_IMAGE = 'medinsurance'
         DOCKER_TAG = "${BUILD_NUMBER}"
         SONAR_TOKEN = 'sqp_3f4ffc80141af9375556e4db6faa5b365cf0c950'
         MAVEN_OPTS = '-Dmaven.test.failure.ignore=true'

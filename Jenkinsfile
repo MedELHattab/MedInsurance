@@ -86,7 +86,7 @@ pipeline {
                       mvn sonar:sonar \
                       -Dsonar.projectKey=MedInsurance \
                       -Dsonar.projectName=MedInsurance \
-                      -Dsonar.host.url=http://localhost:9000
+                      -Dsonar.host.url=http://sonar:9000 \
                       -Dsonar.login=${SONAR_TOKEN}
                 '''
             }

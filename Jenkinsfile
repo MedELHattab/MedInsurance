@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'medInsurance'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        SONAR_TOKEN = credentials('jenkins-sonar')
+        SONAR_TOKEN = sqp_3f4ffc80141af9375556e4db6faa5b365cf0c950
         MAVEN_OPTS = '-Dmaven.test.failure.ignore=true'
     }
 
@@ -83,10 +83,11 @@ pipeline {
         stage('Code Quality Analysis') {
             steps {
                 sh '''
-                    mvn clean verify sonar:sonar \
+                      mvn sonar:sonar \
                       -Dsonar.projectKey=MedInsurance \
-                      -Dsonar.host.url=http://localhost:9000 \
-                      -Dsonar.login=sqp_3f4ffc80141af9375556e4db6faa5b365cf0c950
+                      -Dsonar.projectName=MedInsurance \
+                      -Dsonar.host.url=http://sonar:9000 \
+                      -Dsonar.login=${SONAR_TOKEN}
                 '''
             }
         }

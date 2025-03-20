@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medinsurance-database
+  labels:
+    app: medinsurance-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medinsurance-database
+  template:
+    metadata:
+      labels:
+        app: medinsurance-database
+    spec:
+      containers:
+        - name: database
+          image: postgres:14
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: medinsurance
+            - name: POSTGRES_USER
+              value: myuser
+            - name: POSTGRES_PASSWORD
+              value: mypassword
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: medinsurance-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medinsurance-database-service
+spec:
+  selector:
+    app: medinsurance-database
+  ports:
+    - port: 5432
+      targetPort: 5432

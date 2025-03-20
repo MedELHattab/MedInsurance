@@ -49,7 +49,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                    mvn clean package -DskipTests --batch-mode --errors
+                    mvn clean package  --batch-mode --errors
                 '''
             }
         }

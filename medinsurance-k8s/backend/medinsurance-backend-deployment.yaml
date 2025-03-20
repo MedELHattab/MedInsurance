@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medinsurance-backend
+  labels:
+    app: medinsurance-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medinsurance-backend
+  template:
+    metadata:
+      labels:
+        app: medinsurance-backend
+    spec:
+      containers:
+        - name: backend
+          image: medinsurance:4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://medinsurance-database-service:5432/medinsurance
+            - name: SPRING_DATASOURCE_USERNAME
+              value: myuser
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: mypassword
+            - name: JWT_SECRET_KEY
+              value: Y2hpZXotYXdhaXRpbmctam10LXNlY3JldC1rZXktMTIzNDU2Nzg5IQ==
+            - name: SUPPORT_EMAIL
+              value: elhattabmohammedelarbi@gmail.com
+            - name: APP_PASSWORD
+              value: bxfawamxiicoyvci
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medinsurance-backend-service
+spec:
+  selector:
+    app: medinsurance-backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: NodePort
